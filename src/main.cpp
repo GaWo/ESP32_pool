@@ -1,5 +1,12 @@
 /*********
-  Rui Santos
+ * 
+ * 
+ *  PIN OneWire
+ *  3.3V  --> Rot
+ *  GND   --> Schwarz
+ *  D15   --> Gelb
+ *  4.7k      Rot--> Gelb
+ * 
   Complete project details at http://randomnerdtutorials.com  
   Based on the Dallas Temperature Library example
   https://randomnerdtutorials.com/guide-for-ds18b20-temperature-sensor-with-arduino/
@@ -86,7 +93,7 @@ for (uint8_t i = 0; i < 8; i++)  {
 }
 
 /////////////////////////////// Call PHP to insert Record
-void callPHP(float temp, String MacID, DeviceAddress  Onewire_adr, String timestamp){
+void callPHP(float temp, String MacID, DeviceAddress  Onewire_adr, String timestamp, String sensor_type){
 //  http://192.168.1.12/t1/temp?timestamp=20200515121314&temp=22.99&sensor=B18
 
   String url = "/t1/temp.php";
@@ -98,6 +105,8 @@ void callPHP(float temp, String MacID, DeviceAddress  Onewire_adr, String timest
   url += MacID;   
   url += "&sensor_adr=";
   url += convert_uint_to_HexString(Onewire_adr);
+  url += "&sensor_type=";
+  url += sensor_type;
 
   // Serial.println(url);
  // Use WiFiClient class to create TCP connections
@@ -231,7 +240,7 @@ void loop(void){
       Serial.println(tempC);
 
       // Call to php for sql insert
-       callPHP(tempC, getMACID(), tempDeviceAddress, ts_of_measure);
+       callPHP(tempC, getMACID(), tempDeviceAddress, ts_of_measure, "Temp");
     }
   }
   delay(20000);
